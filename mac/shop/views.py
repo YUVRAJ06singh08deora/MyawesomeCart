@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from .models import product
+from .models import Product
 from math import ceil
 
 # Create your views here.
@@ -12,10 +12,10 @@ def index(request):
     # nSlides = n//4 + ceil((n/4)-(n//4))
 
     allProds = []
-    catprods = product.objects.values('category', 'id')
+    catprods = Product.objects.values('category', 'id')
     cats = {item['category'] for item in catprods}
     for cat in cats:
-        prod = product.objects.filter(category=cat)
+        prod = Product.objects.filter(category=cat)
         n = len(prod)
         nSlides = n // 4 + ceil((n / 4) - (n // 4))
         allProds.append([prod, range(1, nSlides), nSlides])
@@ -38,8 +38,12 @@ def tracker(request):
 def search(request):
     return render(request, 'shop/search.html')
 
-def productView(request):
-    return render(request, 'shop/prodView.html')
+def productView(request, myid):
+    # Fetch the product using the id
+    product = Product.objects.filter(id=myid)
+
+
+    return render(request, 'shop/prodView.html', {'product':product[0]})
 
 def checkout(request):
     return render(request, 'shop/checkout.html')
